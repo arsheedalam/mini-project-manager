@@ -1,32 +1,52 @@
 import { useState } from "react";
 import { createProject } from "../api/api";
+import "../styles.css";
 
-function ProjectForm() {
+function ProjectForm({ onProjectCreated }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!name) return alert("Name required");
+    if (!name || !description) {
+      alert("Please fill all fields");
+      return;
+    }
 
-    await createProject({ name, description });
-    window.location.reload();
+    try {
+      const res = await createProject({ name, description });
+
+      onProjectCreated(res.data);
+
+      setName("");
+      setDescription("");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="project-form" onSubmit={handleSubmit}>
       <input
+        className="form-input"
+        type="text"
         placeholder="Project Name"
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
+
       <input
+        className="form-input"
+        type="text"
         placeholder="Description"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
       />
-      <button>Create</button>
+
+      <button className="form-btn" type="submit">
+        + Create Project
+      </button>
     </form>
   );
 }

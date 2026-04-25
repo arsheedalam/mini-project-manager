@@ -1,16 +1,20 @@
 const express = require("express");
 const cors = require("cors");
-require("dotenv").config();
+require("./config/db");
+const projectRoutes = require("./routes/projectRoutes");
 
-const connectDB = require("./config/db");
+const taskRoutes = require("./routes/taskRoutes");
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
-connectDB();
+app.use("/api", projectRoutes);
+app.use("/api", taskRoutes);
 
-app.use("/projects", require("./routes/projectRoutes"));
-app.use("/", require("./routes/taskRoutes"));
 
-app.listen(5000, () => console.log("Server running"));
+
+app.listen(8000, () => {
+  console.log("Server running on port 8000 🚀");
+});
